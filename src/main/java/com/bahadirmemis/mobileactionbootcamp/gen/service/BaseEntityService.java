@@ -1,5 +1,6 @@
 package com.bahadirmemis.mobileactionbootcamp.gen.service;
 
+import com.bahadirmemis.mobileactionbootcamp.gen.entity.BaseAdditionalFields;
 import com.bahadirmemis.mobileactionbootcamp.gen.entity.BaseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,8 +62,29 @@ public abstract class BaseEntityService<E extends BaseEntity, D extends JpaRepos
         return entity;
     }
 
-    public E save(E e){
-        return dao.save(e);
+    public E save(E entity){
+
+        setAdditionalFields(entity);
+
+        return dao.save(entity);
+    }
+
+    private void setAdditionalFields(E entity) {
+
+        BaseAdditionalFields baseAdditionalFields = entity.getBaseAdditionalFields();
+
+        if (baseAdditionalFields == null){
+            baseAdditionalFields = new BaseAdditionalFields();
+            entity.setBaseAdditionalFields(baseAdditionalFields);
+        }
+
+        if (entity.getId() == null){
+            baseAdditionalFields.setCreateDate(new Date());
+//            baseAdditionalFields.setCreatedBy(); // TODO: update here after jwt
+        }
+
+        baseAdditionalFields.setUpdateDate(new Date());
+//        baseAdditionalFields.setUpdatedBy();// TODO: update here after jwt
     }
 
     public void delete(E e){

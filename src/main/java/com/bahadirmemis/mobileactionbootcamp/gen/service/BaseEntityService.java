@@ -46,6 +46,20 @@ public abstract class BaseEntityService<E extends BaseEntity, D extends JpaRepos
         return dao.findById(id);
     }
 
+    public E findByIdWithControl(Long id){
+
+        Optional<E> optionalEntity = dao.findById(id);
+
+        E entity;
+        if (optionalEntity.isPresent()){
+            entity = optionalEntity.get();
+        } else {
+            throw new RuntimeException("Item not found");
+        }
+
+        return entity;
+    }
+
     public E save(E e){
         return dao.save(e);
     }

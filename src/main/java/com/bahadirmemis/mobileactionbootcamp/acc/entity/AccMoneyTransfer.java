@@ -1,6 +1,7 @@
 package com.bahadirmemis.mobileactionbootcamp.acc.entity;
 
 import com.bahadirmemis.mobileactionbootcamp.acc.enums.EnumAccMoneyTransferType;
+import com.bahadirmemis.mobileactionbootcamp.gen.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +17,7 @@ import java.util.Date;
 @Table(name = "ACC_MONEY_TRANSFER")
 @Getter
 @Setter
-public class AccMoneyTransfer {
+public class AccMoneyTransfer extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "AccMoneyTransfer")

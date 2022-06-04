@@ -1,6 +1,7 @@
 package com.bahadirmemis.mobileactionbootcamp.acc.entity;
 
 import com.bahadirmemis.mobileactionbootcamp.acc.enums.EnumAccAccountActivityType;
+import com.bahadirmemis.mobileactionbootcamp.gen.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +17,7 @@ import java.util.Date;
 @Table(name = "ACC_ACCOUNT_ACTIVITY")
 @Getter
 @Setter
-public class AccAccountActivity {
+public class AccAccountActivity extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "AccAccountActivity")

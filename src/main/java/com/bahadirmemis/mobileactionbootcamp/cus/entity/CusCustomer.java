@@ -1,5 +1,6 @@
 package com.bahadirmemis.mobileactionbootcamp.cus.entity;
 
+import com.bahadirmemis.mobileactionbootcamp.gen.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @Table(name = "CUS_CUSTOMER")
 @Getter
 @Setter
-public class CusCustomer {
+public class CusCustomer extends BaseEntity {
 
     @Id
     @SequenceGenerator(name = "CusCustomer", sequenceName = "CUS_CUSTOMER_ID_SEQ")

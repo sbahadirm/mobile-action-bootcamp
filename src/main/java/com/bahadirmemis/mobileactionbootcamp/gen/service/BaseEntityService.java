@@ -42,6 +42,22 @@ public abstract class BaseEntityService<E extends BaseEntity, D extends JpaRepos
         return page.toList();
     }
 
+    public Optional<E> findById(Long id){
+        return dao.findById(id);
+    }
+
+    public E save(E e){
+        return dao.save(e);
+    }
+
+    public void delete(E e){
+        dao.delete(e);
+    }
+
+    public boolean existsById(Long id){
+        return dao.existsById(id);
+    }
+
     protected PageRequest getPageRequest(Optional<Integer> pageOptional, Optional<Integer> sizeOptional){
 
         Integer page = getPage(pageOptional);
@@ -67,21 +83,4 @@ public abstract class BaseEntityService<E extends BaseEntity, D extends JpaRepos
         }
         return page;
     }
-
-    public Optional<E> findById(Long id){
-        return dao.findById(id);
-    }
-
-    public E save(E e){
-        return dao.save(e);
-    }
-
-    public void delete(E e){
-        dao.delete(e);
-    }
-
-    public boolean existsById(Long id){
-        return dao.existsById(id);
-    }
-
 }

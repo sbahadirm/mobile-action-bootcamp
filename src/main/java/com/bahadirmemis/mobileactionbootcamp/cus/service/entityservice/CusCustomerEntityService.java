@@ -33,4 +33,8 @@ public class CusCustomerEntityService {
     public void delete(CusCustomer cusCustomer){
         cusCustomerDao.delete(cusCustomer);
     }
+
+    public boolean existsById(Long id){
+        return cusCustomerDao.existsById(id);
+    }
 }

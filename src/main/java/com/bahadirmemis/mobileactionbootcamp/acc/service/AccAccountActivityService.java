@@ -1,8 +1,11 @@
 package com.bahadirmemis.mobileactionbootcamp.acc.service;
 
+import com.bahadirmemis.mobileactionbootcamp.acc.converter.AccMoneyTransferActivityMapper;
 import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccMoneyActivityDto;
+import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccMoneyActivityRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.acc.entity.AccAccount;
 import com.bahadirmemis.mobileactionbootcamp.acc.entity.AccAccountActivity;
+import com.bahadirmemis.mobileactionbootcamp.acc.enums.EnumAccAccountActivityType;
 import com.bahadirmemis.mobileactionbootcamp.acc.service.entityservice.AccAccountActivityEntityService;
 import com.bahadirmemis.mobileactionbootcamp.acc.service.entityservice.AccAccountEntityService;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +25,29 @@ public class AccAccountActivityService {
     private final AccAccountEntityService accAccountEntityService;
     private final AccAccountActivityEntityService accAccountActivityEntityService;
 
+    public AccMoneyActivityDto withdraw(AccMoneyActivityRequestDto accMoneyActivityRequestDto) {
+
+        validateAccMoneyActivityRequestDto(accMoneyActivityRequestDto);
+
+        Long accAccountId = accMoneyActivityRequestDto.getAccAccountId();
+        BigDecimal amount = accMoneyActivityRequestDto.getAmount();
+
+        AccMoneyActivityDto accMoneyActivityDtoOut = AccMoneyActivityDto.builder()
+                .accAccountId(accAccountId)
+                .amount(amount)
+                .accountActivityType(EnumAccAccountActivityType.WITHDRAW)
+                .build();
+
+        AccAccountActivity accAccountActivity = moneyOut(accMoneyActivityDtoOut);
+
+        AccMoneyActivityDto accMoneyActivityDto = AccMoneyTransferActivityMapper.INSTANCE.convertToAccMoneyActivityDto(accAccountActivity);
+
+        return accMoneyActivityDto;
+    }
+
     public AccAccountActivity moneyOut(AccMoneyActivityDto accMoneyActivityDto) {
 
-        validateMoneyActivityParameters(accMoneyActivityDto);
+        validateAccMoneyActivityDto(accMoneyActivityDto);
 
         AccAccount accAccount = accAccountEntityService.findByIdWithControl(accMoneyActivityDto.getAccAccountId());
 
@@ -39,7 +62,7 @@ public class AccAccountActivityService {
 
     public AccAccountActivity moneyIn(AccMoneyActivityDto accMoneyActivityDto) {
 
-        validateMoneyActivityParameters(accMoneyActivityDto);
+        validateAccMoneyActivityDto(accMoneyActivityDto);
 
         AccAccount accAccount = accAccountEntityService.findByIdWithControl(accMoneyActivityDto.getAccAccountId());
 
@@ -85,8 +108,14 @@ public class AccAccountActivityService {
         return newBalance;
     }
 
-    private void validateMoneyActivityParameters(AccMoneyActivityDto accMoneyActivityDto) {
+    private void validateAccMoneyActivityDto(AccMoneyActivityDto accMoneyActivityDto) {
         if (accMoneyActivityDto == null) {
+            throw new RuntimeException("Parameter cannot be null");
+        }
+    }
+
+    private void validateAccMoneyActivityRequestDto(AccMoneyActivityRequestDto accMoneyActivityRequestDto) {
+        if (accMoneyActivityRequestDto == null) {
             throw new RuntimeException("Parameter cannot be null");
         }
     }

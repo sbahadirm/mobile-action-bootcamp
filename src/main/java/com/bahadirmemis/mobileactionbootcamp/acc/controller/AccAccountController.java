@@ -1,9 +1,7 @@
 package com.bahadirmemis.mobileactionbootcamp.acc.controller;
 
-import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccAccountDto;
-import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccAccountSaveRequestDto;
-import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccMoneyTransferDto;
-import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccMoneyTransferSaveRequestDto;
+import com.bahadirmemis.mobileactionbootcamp.acc.dto.*;
+import com.bahadirmemis.mobileactionbootcamp.acc.service.AccAccountActivityService;
 import com.bahadirmemis.mobileactionbootcamp.acc.service.AccAccountService;
 import com.bahadirmemis.mobileactionbootcamp.acc.service.AccMoneyTransferService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +23,7 @@ public class AccAccountController {
 
     private final AccAccountService accAccountService;
     private final AccMoneyTransferService accMoneyTransferService;
+    private final AccAccountActivityService accAccountActivityService;
 
     @GetMapping
     public ResponseEntity findAll(Optional<Integer> pageOptional, Optional<Integer> sizeOptional){
@@ -63,5 +62,13 @@ public class AccAccountController {
         AccMoneyTransferDto accMoneyTransferDto = accMoneyTransferService.transferMoney(accMoneyTransferSaveRequestDto);
 
         return ResponseEntity.ok(accMoneyTransferDto);
+    }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity withdraw(@RequestBody AccMoneyActivityRequestDto accMoneyActivityRequestDto){
+
+        AccMoneyActivityDto accMoneyActivityDto = accAccountActivityService.withdraw(accMoneyActivityRequestDto);
+
+        return ResponseEntity.ok(accMoneyActivityDto);
     }
 }

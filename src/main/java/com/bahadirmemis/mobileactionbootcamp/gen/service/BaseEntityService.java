@@ -2,6 +2,8 @@ package com.bahadirmemis.mobileactionbootcamp.gen.service;
 
 import com.bahadirmemis.mobileactionbootcamp.gen.entity.BaseAdditionalFields;
 import com.bahadirmemis.mobileactionbootcamp.gen.entity.BaseEntity;
+import com.bahadirmemis.mobileactionbootcamp.gen.enums.GenErrorMessage;
+import com.bahadirmemis.mobileactionbootcamp.gen.exceptions.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -56,7 +58,7 @@ public abstract class BaseEntityService<E extends BaseEntity, D extends JpaRepos
         if (optionalEntity.isPresent()){
             entity = optionalEntity.get();
         } else {
-            throw new RuntimeException("Item not found");
+            throw new ItemNotFoundException(GenErrorMessage.ITEM_NOT_FOUND);
         }
 
         return entity;

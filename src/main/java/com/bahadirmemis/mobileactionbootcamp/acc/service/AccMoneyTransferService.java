@@ -6,9 +6,11 @@ import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccMoneyTransferDto;
 import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccMoneyTransferSaveRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.acc.entity.AccAccount;
 import com.bahadirmemis.mobileactionbootcamp.acc.entity.AccMoneyTransfer;
+import com.bahadirmemis.mobileactionbootcamp.acc.enums.AccErrorMessage;
 import com.bahadirmemis.mobileactionbootcamp.acc.enums.EnumAccAccountActivityType;
 import com.bahadirmemis.mobileactionbootcamp.acc.service.entityservice.AccAccountEntityService;
 import com.bahadirmemis.mobileactionbootcamp.acc.service.entityservice.AccMoneyTransferEntityService;
+import com.bahadirmemis.mobileactionbootcamp.gen.exceptions.GenBusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +70,7 @@ public class AccMoneyTransferService {
 
     private void validateCurrencyType(AccAccount accAccountFrom, AccAccount accAccountTo) {
         if (!accAccountFrom.getCurrencyType().equals(accAccountTo.getCurrencyType())){
-            throw new RuntimeException("Currency types cannot be different!");
+            throw new GenBusinessException(AccErrorMessage.CURRENCY_TYPES_CANNOT_BE_DIFFERENT);
         }
     }
 }

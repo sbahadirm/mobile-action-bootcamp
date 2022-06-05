@@ -5,9 +5,12 @@ import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccMoneyActivityDto;
 import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccMoneyActivityRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.acc.entity.AccAccount;
 import com.bahadirmemis.mobileactionbootcamp.acc.entity.AccAccountActivity;
+import com.bahadirmemis.mobileactionbootcamp.acc.enums.AccErrorMessage;
 import com.bahadirmemis.mobileactionbootcamp.acc.enums.EnumAccAccountActivityType;
 import com.bahadirmemis.mobileactionbootcamp.acc.service.entityservice.AccAccountActivityEntityService;
 import com.bahadirmemis.mobileactionbootcamp.acc.service.entityservice.AccAccountEntityService;
+import com.bahadirmemis.mobileactionbootcamp.gen.enums.GenErrorMessage;
+import com.bahadirmemis.mobileactionbootcamp.gen.exceptions.GenBusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -124,19 +127,19 @@ public class AccAccountActivityService {
 
     private void validateAccMoneyActivityDto(AccMoneyActivityDto accMoneyActivityDto) {
         if (accMoneyActivityDto == null) {
-            throw new RuntimeException("Parameter cannot be null");
+            throw new GenBusinessException(GenErrorMessage.PARAMETER_CANNOT_BE_NULL);
         }
     }
 
     private void validateAccMoneyActivityRequestDto(AccMoneyActivityRequestDto accMoneyActivityRequestDto) {
         if (accMoneyActivityRequestDto == null) {
-            throw new RuntimeException("Parameter cannot be null");
+            throw new GenBusinessException(GenErrorMessage.PARAMETER_CANNOT_BE_NULL);
         }
     }
 
     private void validateBalance(BigDecimal newBalance) {
         if (newBalance.compareTo(BigDecimal.ZERO) < 0){
-            throw new RuntimeException("Insufficient balance!");
+            throw new GenBusinessException(AccErrorMessage.INSUFFICIENT_BALANCE);
         }
     }
 

@@ -5,7 +5,9 @@ import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerSaveRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerUpdateRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.entity.CusCustomer;
+import com.bahadirmemis.mobileactionbootcamp.cus.enums.CusErrorMessage;
 import com.bahadirmemis.mobileactionbootcamp.cus.service.entityservice.CusCustomerEntityService;
+import com.bahadirmemis.mobileactionbootcamp.gen.exceptions.GenBusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +45,7 @@ public class CusCustomerService {
 
     public CusCustomerDto findById(Long id) {
 
-        CusCustomer cusCustomer = cusCustomerEntityService.findById(id).orElseThrow();
+        CusCustomer cusCustomer = cusCustomerEntityService.findByIdWithControl(id);
 
         CusCustomerDto cusCustomerDto = CusCustomerMapper.INSTANCE.convertToCusCustomerDto(cusCustomer);
 
@@ -52,7 +54,7 @@ public class CusCustomerService {
 
     public void delete(Long id) {
 
-        CusCustomer cusCustomer = cusCustomerEntityService.findById(id).orElseThrow();
+        CusCustomer cusCustomer = cusCustomerEntityService.findByIdWithControl(id);
 
         cusCustomerEntityService.delete(cusCustomer);
     }
@@ -63,7 +65,7 @@ public class CusCustomerService {
 
         boolean isExist = cusCustomerEntityService.existsById(id);
         if (!isExist){
-            throw new RuntimeException("Customer does not exist with given id: " + id);
+            throw new GenBusinessException(CusErrorMessage.CUSTOMER_DOES_NOT_EXIST);
         }
 
         CusCustomer cusCustomer = CusCustomerMapper.INSTANCE.convertToCusCustomer(cusCustomerUpdateRequestDto);

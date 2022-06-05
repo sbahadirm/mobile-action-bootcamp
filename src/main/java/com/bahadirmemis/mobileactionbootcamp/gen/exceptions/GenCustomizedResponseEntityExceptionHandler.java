@@ -27,11 +27,36 @@ public class GenCustomizedResponseEntityExceptionHandler extends ResponseEntityE
         String message = ex.getMessage();
         String description = webRequest.getDescription(false);
 
+        return getResponseEntity(errorDate, message, description, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleGenBusinessExceptions(GenBusinessException ex, WebRequest webRequest){
+
+        Date errorDate = new Date();
+        String message = ex.getBaseErrorMessage().getMessage();
+        String description = webRequest.getDescription(false);
+
+        return getResponseEntity(errorDate, message, description, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler
+    public final ResponseEntity<Object> handleItemNotFoundExceptions(ItemNotFoundException ex, WebRequest webRequest){
+
+        Date errorDate = new Date();
+        String message = ex.getBaseErrorMessage().getMessage();
+        String description = webRequest.getDescription(false);
+
+        return getResponseEntity(errorDate, message, description, HttpStatus.NOT_FOUND);
+    }
+
+    private ResponseEntity<Object> getResponseEntity(Date errorDate, String message, String description, HttpStatus internalServerError) {
         GenExceptionResponse genExceptionResponse = new GenExceptionResponse(errorDate, message, description);
 
         RestResponse<GenExceptionResponse> restResponse = RestResponse.error(genExceptionResponse);
         restResponse.setMessages(message);
 
-        return new ResponseEntity<>(restResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(restResponse, internalServerError);
     }
+
 }

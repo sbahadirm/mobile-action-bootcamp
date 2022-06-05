@@ -2,8 +2,11 @@ package com.bahadirmemis.mobileactionbootcamp.gen.exceptions;
 
 import com.bahadirmemis.mobileactionbootcamp.gen.response.GenExceptionResponse;
 import com.bahadirmemis.mobileactionbootcamp.gen.response.RestResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +14,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Bahadır Memiş
@@ -48,6 +52,28 @@ public class GenCustomizedResponseEntityExceptionHandler extends ResponseEntityE
         String description = webRequest.getDescription(false);
 
         return getResponseEntity(errorDate, message, description, HttpStatus.NOT_FOUND);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+        Date errorDate = new Date();
+        String message = "Validation failed!";
+
+        String description = "";
+        List<ObjectError> errorList = ex.getBindingResult().getAllErrors();
+        if (errorList != null && !errorList.isEmpty()){
+
+            for (ObjectError objectError : errorList) {
+                String defaultMessage = objectError.getDefaultMessage();
+
+                description = description + defaultMessage + "\n";
+            }
+        } else {
+            description = ex.getBindingResult().toString();
+        }
+
+        return getResponseEntity(errorDate, message, description, HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<Object> getResponseEntity(Date errorDate, String message, String description, HttpStatus internalServerError) {

@@ -2,7 +2,10 @@ package com.bahadirmemis.mobileactionbootcamp.acc.controller;
 
 import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccAccountDto;
 import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccAccountSaveRequestDto;
+import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccMoneyTransferDto;
+import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccMoneyTransferSaveRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.acc.service.AccAccountService;
+import com.bahadirmemis.mobileactionbootcamp.acc.service.AccMoneyTransferService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,7 @@ import java.util.Optional;
 public class AccAccountController {
 
     private final AccAccountService accAccountService;
+    private final AccMoneyTransferService accMoneyTransferService;
 
     @GetMapping
     public ResponseEntity findAll(Optional<Integer> pageOptional, Optional<Integer> sizeOptional){
@@ -51,5 +55,13 @@ public class AccAccountController {
         accAccountService.cancel(id);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/money-transfer")
+    public ResponseEntity transferMoney(@RequestBody AccMoneyTransferSaveRequestDto accMoneyTransferSaveRequestDto){
+
+        AccMoneyTransferDto accMoneyTransferDto = accMoneyTransferService.transferMoney(accMoneyTransferSaveRequestDto);
+
+        return ResponseEntity.ok(accMoneyTransferDto);
     }
 }

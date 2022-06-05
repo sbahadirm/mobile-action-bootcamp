@@ -4,8 +4,8 @@ import com.bahadirmemis.mobileactionbootcamp.acc.dto.*;
 import com.bahadirmemis.mobileactionbootcamp.acc.service.AccAccountActivityService;
 import com.bahadirmemis.mobileactionbootcamp.acc.service.AccAccountService;
 import com.bahadirmemis.mobileactionbootcamp.acc.service.AccMoneyTransferService;
+import com.bahadirmemis.mobileactionbootcamp.gen.response.RestResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +29,7 @@ public class AccAccountController {
     public ResponseEntity findAll(Optional<Integer> pageOptional, Optional<Integer> sizeOptional){
         List<AccAccountDto> accAccountDtoList =  accAccountService.findAll(pageOptional, sizeOptional);
 
-        return ResponseEntity.ok(accAccountDtoList);
+        return ResponseEntity.ok(RestResponse.of(accAccountDtoList));
     }
 
     @GetMapping("/{id}")
@@ -37,7 +37,7 @@ public class AccAccountController {
 
         AccAccountDto accAccountDto = accAccountService.findById(id);
 
-        return ResponseEntity.ok(accAccountDto);
+        return ResponseEntity.ok(RestResponse.of(accAccountDto));
     }
 
     @PostMapping
@@ -45,7 +45,7 @@ public class AccAccountController {
 
         AccAccountDto accAccountDto = accAccountService.save(accAccountSaveRequestDto);
 
-        return new ResponseEntity(accAccountDto, HttpStatus.CREATED);
+        return ResponseEntity.ok(RestResponse.of(accAccountDto));
     }
 
     @PatchMapping("/cancel/{id}")
@@ -53,7 +53,7 @@ public class AccAccountController {
 
         accAccountService.cancel(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(RestResponse.empty());
     }
 
     @PostMapping("/money-transfer")
@@ -61,7 +61,7 @@ public class AccAccountController {
 
         AccMoneyTransferDto accMoneyTransferDto = accMoneyTransferService.transferMoney(accMoneyTransferSaveRequestDto);
 
-        return ResponseEntity.ok(accMoneyTransferDto);
+        return ResponseEntity.ok(RestResponse.of(accMoneyTransferDto));
     }
 
     @PostMapping("/withdraw")
@@ -69,7 +69,7 @@ public class AccAccountController {
 
         AccMoneyActivityDto accMoneyActivityDto = accAccountActivityService.withdraw(accMoneyActivityRequestDto);
 
-        return ResponseEntity.ok(accMoneyActivityDto);
+        return ResponseEntity.ok(RestResponse.of(accMoneyActivityDto));
     }
 
     @PostMapping("/deposit")
@@ -77,6 +77,6 @@ public class AccAccountController {
 
         AccMoneyActivityDto accMoneyActivityDto = accAccountActivityService.deposit(accMoneyActivityRequestDto);
 
-        return ResponseEntity.ok(accMoneyActivityDto);
+        return ResponseEntity.ok(RestResponse.of(accMoneyActivityDto));
     }
 }

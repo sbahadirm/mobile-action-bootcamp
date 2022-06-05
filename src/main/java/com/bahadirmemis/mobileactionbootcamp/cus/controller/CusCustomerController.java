@@ -9,6 +9,7 @@ import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerSaveRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerUpdateRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.service.CusCustomerService;
+import com.bahadirmemis.mobileactionbootcamp.gen.response.RestResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class CusCustomerController {
 
         List<CusCustomerDto> cusCustomerDtoList = cusCustomerService.findAll();
 
-        return ResponseEntity.ok(cusCustomerDtoList);
+        return ResponseEntity.ok(RestResponse.of(cusCustomerDtoList));
     }
 
     @PostMapping
@@ -40,7 +41,7 @@ public class CusCustomerController {
 
         CusCustomerDto cusCustomerDto = cusCustomerService.save(cusCustomerSaveRequestDto);
 
-        return new ResponseEntity(cusCustomerDto, HttpStatus.CREATED);
+        return ResponseEntity.ok(RestResponse.of(cusCustomerDto));
     }
 
     @GetMapping("/{id}")
@@ -48,7 +49,7 @@ public class CusCustomerController {
 
         CusCustomerDto cusCustomerDto = cusCustomerService.findById(id);
 
-        return ResponseEntity.ok(cusCustomerDto);
+        return ResponseEntity.ok(RestResponse.of(cusCustomerDto));
     }
 
     @DeleteMapping("/{id}")
@@ -56,7 +57,7 @@ public class CusCustomerController {
 
         cusCustomerService.delete(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(RestResponse.empty());
     }
 
     @PutMapping
@@ -64,6 +65,6 @@ public class CusCustomerController {
 
         CusCustomerDto cusCustomerDto = cusCustomerService.update(cusCustomerUpdateRequestDto);
 
-        return ResponseEntity.ok(cusCustomerDto);
+        return ResponseEntity.ok(RestResponse.of(cusCustomerDto));
     }
 }

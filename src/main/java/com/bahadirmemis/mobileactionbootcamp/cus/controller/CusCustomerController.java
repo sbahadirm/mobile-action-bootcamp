@@ -10,8 +10,11 @@ import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerSaveRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerUpdateRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.service.CusCustomerService;
 import com.bahadirmemis.mobileactionbootcamp.gen.response.RestResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +32,10 @@ public class CusCustomerController {
 
     private final CusCustomerService cusCustomerService;
 
+    @Operation(
+            tags = "Customer Controller",
+            description = "Gets all customers"
+    )
     @GetMapping
     public ResponseEntity findAll(){
 
@@ -37,6 +44,41 @@ public class CusCustomerController {
         return ResponseEntity.ok(RestResponse.of(cusCustomerDtoList));
     }
 
+    @Operation(
+            tags = "Customer Controller",
+            description = "saves new customer",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "creates new customer",
+                    content = @Content(
+                            mediaType = "application/json",
+                                    schema= @Schema(
+                                    implementation = CusCustomerSaveRequestDto.class
+                            ),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Turkish Citizen",
+                                            summary = "New Turkish Citizen Customer",
+                                            value = "{\n" +
+                                                    "  \"name\": \"ahmet\",\n" +
+                                                    "  \"surname\": \"kurt\",\n" +
+                                                    "  \"identityNo\": 12345678901,\n" +
+                                                    "  \"password\": \"Ahmet.1234\"\n" +
+                                                    "}"
+                                    ),
+                                    @ExampleObject(
+                                            name = "Foreign Citizen",
+                                            summary = "New Foreign Citizen Customer",
+                                            value = "{\n" +
+                                                    "  \"name\": \"john\",\n" +
+                                                    "  \"surname\": \"grant\",\n" +
+                                                    "  \"identityNo\": 90345678901,\n" +
+                                                    "  \"password\": \"John.1234\"\n" +
+                                                    "}"
+                                    )
+                            }
+                    )
+            )
+    )
     @PostMapping
     public ResponseEntity save(@Valid @RequestBody CusCustomerSaveRequestDto cusCustomerSaveRequestDto){
 
@@ -45,6 +87,7 @@ public class CusCustomerController {
         return ResponseEntity.ok(RestResponse.of(cusCustomerDto));
     }
 
+    @Operation(tags = "Customer Controller")
     @GetMapping("/{id}")
     public ResponseEntity findById(@PathVariable Long id){
 
@@ -53,6 +96,7 @@ public class CusCustomerController {
         return ResponseEntity.ok(RestResponse.of(cusCustomerDto));
     }
 
+    @Operation(tags = "Customer Controller")
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id){
 
@@ -61,6 +105,7 @@ public class CusCustomerController {
         return ResponseEntity.ok(RestResponse.empty());
     }
 
+    @Operation(tags = "Customer Controller")
     @PutMapping
     public ResponseEntity update(@RequestBody CusCustomerUpdateRequestDto cusCustomerUpdateRequestDto){
 

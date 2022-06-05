@@ -71,4 +71,12 @@ public class AccAccountController {
 
         return ResponseEntity.ok(accMoneyActivityDto);
     }
+
+    @PostMapping("/deposit")
+    public ResponseEntity deposit(@RequestBody AccMoneyActivityRequestDto accMoneyActivityRequestDto){
+
+        AccMoneyActivityDto accMoneyActivityDto = accAccountActivityService.deposit(accMoneyActivityRequestDto);
+
+        return ResponseEntity.ok(accMoneyActivityDto);
+    }
 }

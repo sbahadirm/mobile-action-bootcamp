@@ -29,16 +29,30 @@ public class AccAccountActivityService {
 
         validateAccMoneyActivityRequestDto(accMoneyActivityRequestDto);
 
-        Long accAccountId = accMoneyActivityRequestDto.getAccAccountId();
-        BigDecimal amount = accMoneyActivityRequestDto.getAmount();
-
         AccMoneyActivityDto accMoneyActivityDtoOut = AccMoneyActivityDto.builder()
-                .accAccountId(accAccountId)
-                .amount(amount)
+                .accAccountId(accMoneyActivityRequestDto.getAccAccountId())
+                .amount(accMoneyActivityRequestDto.getAmount())
                 .accountActivityType(EnumAccAccountActivityType.WITHDRAW)
                 .build();
 
         AccAccountActivity accAccountActivity = moneyOut(accMoneyActivityDtoOut);
+
+        AccMoneyActivityDto accMoneyActivityDto = AccMoneyTransferActivityMapper.INSTANCE.convertToAccMoneyActivityDto(accAccountActivity);
+
+        return accMoneyActivityDto;
+    }
+
+    public AccMoneyActivityDto deposit(AccMoneyActivityRequestDto accMoneyActivityRequestDto) {
+
+        validateAccMoneyActivityRequestDto(accMoneyActivityRequestDto);
+
+        AccMoneyActivityDto accMoneyActivityDtoIn = AccMoneyActivityDto.builder()
+                .accAccountId(accMoneyActivityRequestDto.getAccAccountId())
+                .amount(accMoneyActivityRequestDto.getAmount())
+                .accountActivityType(EnumAccAccountActivityType.WITHDRAW)
+                .build();
+
+        AccAccountActivity accAccountActivity = moneyIn(accMoneyActivityDtoIn);
 
         AccMoneyActivityDto accMoneyActivityDto = AccMoneyTransferActivityMapper.INSTANCE.convertToAccMoneyActivityDto(accAccountActivity);
 
@@ -125,4 +139,5 @@ public class AccAccountActivityService {
             throw new RuntimeException("Insufficient balance!");
         }
     }
+
 }

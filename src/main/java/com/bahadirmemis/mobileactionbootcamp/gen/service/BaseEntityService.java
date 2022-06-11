@@ -122,4 +122,8 @@ public abstract class BaseEntityService<E extends BaseEntity, D extends JpaRepos
         }
         return page;
     }
+
+    public D getDao() {
+        return dao;
+    }
 }

@@ -1,7 +1,9 @@
 package com.bahadirmemis.mobileactionbootcamp.crd.controller;
 
+import com.bahadirmemis.mobileactionbootcamp.crd.dto.CrdCreditCardActivityDto;
 import com.bahadirmemis.mobileactionbootcamp.crd.dto.CrdCreditCardDto;
 import com.bahadirmemis.mobileactionbootcamp.crd.dto.CrdCreditCardSaveRequestDto;
+import com.bahadirmemis.mobileactionbootcamp.crd.dto.CrdCreditCardSpendDto;
 import com.bahadirmemis.mobileactionbootcamp.crd.service.CrdCreditCardService;
 import com.bahadirmemis.mobileactionbootcamp.gen.response.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,5 +58,13 @@ public class CrdCreditCardController {
         crdCreditCardService.cancel(id);
 
         return ResponseEntity.ok(RestResponse.empty());
+    }
+
+    @PostMapping("/spend")
+    public ResponseEntity spend(@RequestBody CrdCreditCardSpendDto crdCreditCardSpendDto){
+
+        CrdCreditCardActivityDto crdCreditCardActivityDto = crdCreditCardService.spend(crdCreditCardSpendDto);
+
+        return ResponseEntity.ok(RestResponse.of(crdCreditCardActivityDto));
     }
 }

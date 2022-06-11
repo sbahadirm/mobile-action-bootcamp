@@ -2,10 +2,7 @@ package com.bahadirmemis.mobileactionbootcamp.crd.service;
 
 import com.bahadirmemis.mobileactionbootcamp.crd.converter.CrdCreditCardActivityMapper;
 import com.bahadirmemis.mobileactionbootcamp.crd.converter.CrdCreditCardMapper;
-import com.bahadirmemis.mobileactionbootcamp.crd.dto.CrdCreditCardActivityDto;
-import com.bahadirmemis.mobileactionbootcamp.crd.dto.CrdCreditCardDto;
-import com.bahadirmemis.mobileactionbootcamp.crd.dto.CrdCreditCardSaveRequestDto;
-import com.bahadirmemis.mobileactionbootcamp.crd.dto.CrdCreditCardSpendDto;
+import com.bahadirmemis.mobileactionbootcamp.crd.dto.*;
 import com.bahadirmemis.mobileactionbootcamp.crd.entity.CrdCreditCard;
 import com.bahadirmemis.mobileactionbootcamp.crd.entity.CrdCreditCardActivity;
 import com.bahadirmemis.mobileactionbootcamp.crd.enums.CrdErrorMessage;
@@ -153,7 +150,7 @@ public class CrdCreditCardService {
 
         BigDecimal amount = crdCreditCardActivity.getAmount();
 
-        CrdCreditCard crdCreditCard = calculateAndUpdateCrdCreditCardForRefund(crdCreditCardActivity, amount);
+        CrdCreditCard crdCreditCard = addLimitToCreditCard(crdCreditCardActivity.getCrdCreditCard(), amount);
 
         crdCreditCardActivity = createCrdCreditCardActivityForRefund(crdCreditCardActivity.getDescription(), amount, crdCreditCard);
 
@@ -161,6 +158,33 @@ public class CrdCreditCardService {
 
         return crdCreditCardActivityDto;
 
+    }
+
+    public CrdCreditCardActivityDto payment(CrdCreditCardPaymentDto crdCreditCardPaymentDto) {
+
+        BigDecimal amount = crdCreditCardPaymentDto.getAmount();
+        Long crdCreditCardId = crdCreditCardPaymentDto.getCrdCreditCardId();
+
+        CrdCreditCard crdCreditCard = crdCreditCardEntityService.findByIdWithControl(crdCreditCardId);
+
+        crdCreditCard = addLimitToCreditCard(crdCreditCard, amount);
+
+        CrdCreditCardActivity crdCreditCardActivity = createCrdCreditCardActivityForPayment(amount, crdCreditCard);
+
+        CrdCreditCardActivityDto crdCreditCardActivityDto = CrdCreditCardActivityMapper.INSTANCE.convertToCrdCreditCardActivityDto(crdCreditCardActivity);
+
+        return crdCreditCardActivityDto;
+    }
+
+    private CrdCreditCardActivity createCrdCreditCardActivityForPayment(BigDecimal amount, CrdCreditCard crdCreditCard) {
+        CrdCreditCardActivity crdCreditCardActivity = new CrdCreditCardActivity();
+        crdCreditCardActivity.setCrdCreditCard(crdCreditCard);
+        crdCreditCardActivity.setAmount(amount);
+        crdCreditCardActivity.setDescription("PAYMENT");
+        crdCreditCardActivity.setTransactionDate(new Date());
+        crdCreditCardActivity.setCreditCardActivityType(EnumCrdCreditCardActivityType.PAYMENT);
+        crdCreditCardActivity = crdCreditCardActivityEntityService.save(crdCreditCardActivity);
+        return crdCreditCardActivity;
     }
 
     private CrdCreditCardActivity createCrdCreditCardActivityForRefund(String oldDescription, BigDecimal amount, CrdCreditCard crdCreditCard) {
@@ -175,9 +199,8 @@ public class CrdCreditCardService {
         return crdCreditCardActivityRefund;
     }
 
-    private CrdCreditCard calculateAndUpdateCrdCreditCardForRefund(CrdCreditCardActivity crdCreditCardActivity, BigDecimal amount) {
+    private CrdCreditCard addLimitToCreditCard(CrdCreditCard crdCreditCard, BigDecimal amount) {
 
-        CrdCreditCard crdCreditCard = crdCreditCardActivity.getCrdCreditCard();
         BigDecimal newCurrentDebt = crdCreditCard.getCurrentDebt().subtract(amount);
         BigDecimal newAvailableCardLimit = crdCreditCard.getAvailableCardLimit().add(amount);
 

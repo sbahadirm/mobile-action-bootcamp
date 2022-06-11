@@ -1,6 +1,5 @@
 package com.bahadirmemis.mobileactionbootcamp.crd.service;
 
-import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccAccountDto;
 import com.bahadirmemis.mobileactionbootcamp.crd.converter.CrdCreditCardActivityMapper;
 import com.bahadirmemis.mobileactionbootcamp.crd.converter.CrdCreditCardMapper;
 import com.bahadirmemis.mobileactionbootcamp.crd.dto.CrdCreditCardActivityDto;
@@ -148,6 +147,45 @@ public class CrdCreditCardService {
         return crdCreditCardActivityDto;
     }
 
+    public CrdCreditCardActivityDto refund(Long activityId) {
+
+        CrdCreditCardActivity crdCreditCardActivity = crdCreditCardActivityEntityService.findByIdWithControl(activityId);
+
+        BigDecimal amount = crdCreditCardActivity.getAmount();
+
+        CrdCreditCard crdCreditCard = calculateAndUpdateCrdCreditCardForRefund(crdCreditCardActivity, amount);
+
+        crdCreditCardActivity = createCrdCreditCardActivityForRefund(crdCreditCardActivity.getDescription(), amount, crdCreditCard);
+
+        CrdCreditCardActivityDto crdCreditCardActivityDto = CrdCreditCardActivityMapper.INSTANCE.convertToCrdCreditCardActivityDto(crdCreditCardActivity);
+
+        return crdCreditCardActivityDto;
+
+    }
+
+    private CrdCreditCardActivity createCrdCreditCardActivityForRefund(String oldDescription, BigDecimal amount, CrdCreditCard crdCreditCard) {
+        String description = "REFUND -> " + oldDescription;
+        CrdCreditCardActivity crdCreditCardActivityRefund = new CrdCreditCardActivity();
+        crdCreditCardActivityRefund.setCrdCreditCard(crdCreditCard);
+        crdCreditCardActivityRefund.setAmount(amount);
+        crdCreditCardActivityRefund.setDescription(description);
+        crdCreditCardActivityRefund.setTransactionDate(new Date());
+        crdCreditCardActivityRefund.setCreditCardActivityType(EnumCrdCreditCardActivityType.REFUND);
+        crdCreditCardActivityRefund = crdCreditCardActivityEntityService.save(crdCreditCardActivityRefund);
+        return crdCreditCardActivityRefund;
+    }
+
+    private CrdCreditCard calculateAndUpdateCrdCreditCardForRefund(CrdCreditCardActivity crdCreditCardActivity, BigDecimal amount) {
+
+        CrdCreditCard crdCreditCard = crdCreditCardActivity.getCrdCreditCard();
+        BigDecimal newCurrentDebt = crdCreditCard.getCurrentDebt().subtract(amount);
+        BigDecimal newAvailableCardLimit = crdCreditCard.getAvailableCardLimit().add(amount);
+
+        crdCreditCard = updateCrdCreditCard(crdCreditCard, newAvailableCardLimit, newCurrentDebt);
+
+        return crdCreditCard;
+    }
+
     private LocalDate calculateCutoffDateLocal(String cutoffDayStr) {
         int currentYear = LocalDate.now().getYear();
         int currentMonth = LocalDate.now().getMonthValue();
@@ -184,8 +222,8 @@ public class CrdCreditCardService {
     }
 
     private CrdCreditCard updateCrdCreditCard(CrdCreditCard crdCreditCard, BigDecimal newAvailableCardLimit, BigDecimal newCurrentDebt) {
-        crdCreditCard.setCurrentDebt(newCurrentDebt);
         crdCreditCard.setAvailableCardLimit(newAvailableCardLimit);
+        crdCreditCard.setCurrentDebt(newCurrentDebt);
         crdCreditCard = crdCreditCardEntityService.save(crdCreditCard);
         return crdCreditCard;
     }
@@ -227,4 +265,5 @@ public class CrdCreditCardService {
             throw new GenBusinessException(CrdErrorMessage.CREDIT_CARD_EXPIRED);
         }
     }
+
 }

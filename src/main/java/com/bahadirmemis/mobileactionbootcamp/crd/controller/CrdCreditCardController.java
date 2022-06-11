@@ -67,4 +67,12 @@ public class CrdCreditCardController {
 
         return ResponseEntity.ok(RestResponse.of(crdCreditCardActivityDto));
     }
+
+    @PostMapping("/refund/{activityId}")
+    public ResponseEntity refund(@PathVariable Long activityId){
+
+        CrdCreditCardActivityDto crdCreditCardActivityDto = crdCreditCardService.refund(activityId);
+
+        return ResponseEntity.ok(RestResponse.of(crdCreditCardActivityDto));
+    }
 }

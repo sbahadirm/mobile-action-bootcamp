@@ -176,6 +176,20 @@ public class CrdCreditCardService {
         return crdCreditCardActivityDto;
     }
 
+    public CrdCreditCardDetails statement(Long id) {
+
+        CrdCreditCardDetails creditCardDetails = crdCreditCardEntityService.getCreditCardDetails(id);
+
+        List<CrdCreditCardActivity> crdCreditCardActivityList = crdCreditCardActivityEntityService.findAllByCrdCreditCardId(id);
+
+        List<CrdCreditCardActivityDto> crdCreditCardActivityDtoList = CrdCreditCardActivityMapper.INSTANCE.convertToCrdCreditCardActivityDtoList(crdCreditCardActivityList);
+
+        creditCardDetails.setCrdCreditCardActivityDtoList(crdCreditCardActivityDtoList);
+
+        return creditCardDetails;
+
+    }
+
     private CrdCreditCardActivity createCrdCreditCardActivityForPayment(BigDecimal amount, CrdCreditCard crdCreditCard) {
         CrdCreditCardActivity crdCreditCardActivity = new CrdCreditCardActivity();
         crdCreditCardActivity.setCrdCreditCard(crdCreditCard);

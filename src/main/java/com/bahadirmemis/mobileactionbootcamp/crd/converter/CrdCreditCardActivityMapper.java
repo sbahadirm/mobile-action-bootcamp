@@ -7,6 +7,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 /**
  * @author Bahadır Memiş
  * @since 1.0.0
@@ -18,4 +20,6 @@ public interface CrdCreditCardActivityMapper {
 
     @Mapping(target = "crdCreditCardId", source = "crdCreditCard.id")
     CrdCreditCardActivityDto convertToCrdCreditCardActivityDto(CrdCreditCardActivity crdCreditCardActivity);
+
+    List<CrdCreditCardActivityDto> convertToCrdCreditCardActivityDtoList(List<CrdCreditCardActivity> crdCreditCardActivityList);
 }

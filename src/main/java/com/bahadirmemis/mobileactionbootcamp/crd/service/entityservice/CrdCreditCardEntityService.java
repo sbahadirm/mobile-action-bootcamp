@@ -1,6 +1,7 @@
 package com.bahadirmemis.mobileactionbootcamp.crd.service.entityservice;
 
 import com.bahadirmemis.mobileactionbootcamp.crd.dao.CrdCreditCardDao;
+import com.bahadirmemis.mobileactionbootcamp.crd.dto.CrdCreditCardDetails;
 import com.bahadirmemis.mobileactionbootcamp.crd.entity.CrdCreditCard;
 import com.bahadirmemis.mobileactionbootcamp.gen.enums.EnumGenStatus;
 import com.bahadirmemis.mobileactionbootcamp.gen.service.BaseEntityService;
@@ -21,5 +22,9 @@ public class CrdCreditCardEntityService extends BaseEntityService<CrdCreditCard,
 
     public CrdCreditCard findActiveByCardNoAndCvvNoAndExpireDate(Long cardNo, Long cvvNo, Date expireDate){
         return getDao().findByCardNoAndCvvNoAndExpireDateAndStatus(cardNo, cvvNo, expireDate, EnumGenStatus.ACTIVE);
+    }
+
+    public CrdCreditCardDetails getCreditCardDetails(Long creditCardId){
+        return getDao().getCreditCardDetails(creditCardId);
     }
 }

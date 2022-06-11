@@ -9,6 +9,7 @@ import com.bahadirmemis.mobileactionbootcamp.cus.enums.CusErrorMessage;
 import com.bahadirmemis.mobileactionbootcamp.cus.service.entityservice.CusCustomerEntityService;
 import com.bahadirmemis.mobileactionbootcamp.gen.exceptions.GenBusinessException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
 public class CusCustomerService {
 
     private final CusCustomerEntityService cusCustomerEntityService;
+    private final PasswordEncoder passwordEncoder;
 
     public List<CusCustomerDto> findAll() {
 
@@ -36,6 +38,8 @@ public class CusCustomerService {
 
         CusCustomer cusCustomer = CusCustomerMapper.INSTANCE.convertToCusCustomer(cusCustomerSaveRequestDto);
 
+        String password = passwordEncoder.encode(cusCustomer.getPassword());
+        cusCustomer.setPassword(password);
         cusCustomer = cusCustomerEntityService.save(cusCustomer);
 
         CusCustomerDto cusCustomerDto = CusCustomerMapper.INSTANCE.convertToCusCustomerDto(cusCustomer);

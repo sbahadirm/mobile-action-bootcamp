@@ -1,6 +1,7 @@
 package com.bahadirmemis.mobileactionbootcamp.acc.service;
 
 import com.bahadirmemis.mobileactionbootcamp.acc.converter.AccAccountMapper;
+import com.bahadirmemis.mobileactionbootcamp.acc.converter.AccAccountMapperAbstract;
 import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccAccountDto;
 import com.bahadirmemis.mobileactionbootcamp.acc.dto.AccAccountSaveRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.acc.entity.AccAccount;
@@ -25,7 +26,7 @@ import java.util.Optional;
 public class AccAccountService {
 
     private final AccAccountEntityService accAccountEntityService;
-    private final CusCustomerEntityService cusCustomerEntityService; //TODO: remove
+    private final AccAccountMapperAbstract accAccountMapperAbstract;
 
     public List<AccAccountDto> findAll() {
 
@@ -56,12 +57,9 @@ public class AccAccountService {
 
     public AccAccountDto save(AccAccountSaveRequestDto accAccountSaveRequestDto) {
 
-        CusCustomer cusCustomer = cusCustomerEntityService.findByIdWithControl(accAccountSaveRequestDto.getCusCustomerId());
-
         String ibanNo = getIbanNo();
 
-        AccAccount accAccount = AccAccountMapper.INSTANCE.convertToAccAccount(accAccountSaveRequestDto);
-        accAccount.setCusCustomer(cusCustomer);
+        AccAccount accAccount = accAccountMapperAbstract.convertToAccAccount(accAccountSaveRequestDto);
         accAccount.setIbanNo(ibanNo);
         accAccount.setStatus(EnumGenStatus.ACTIVE);
         accAccount = accAccountEntityService.save(accAccount);

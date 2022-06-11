@@ -24,5 +24,4 @@ public interface AccAccountMapper {
 
     List<AccAccountDto> convertToAccAccountDtoList(List<AccAccount> accAccountList);
 
-    AccAccount convertToAccAccount(AccAccountSaveRequestDto accAccountSaveRequestDto);
 }

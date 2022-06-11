@@ -9,11 +9,15 @@ import com.bahadirmemis.mobileactionbootcamp.crd.service.entityservice.CrdCredit
 import com.bahadirmemis.mobileactionbootcamp.cus.entity.CusCustomer;
 import com.bahadirmemis.mobileactionbootcamp.cus.service.entityservice.CusCustomerEntityService;
 import com.bahadirmemis.mobileactionbootcamp.gen.enums.EnumGenStatus;
+import com.bahadirmemis.mobileactionbootcamp.gen.util.DateUtil;
 import com.bahadirmemis.mobileactionbootcamp.gen.util.StringUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -54,23 +58,61 @@ public class CrdCreditCardService {
         Long cardNo = getCardNo();
         Long cvvNo = getCvvNo();
 
+        BigDecimal limit = calculateLimit(crdCreditCardSaveRequestDto.getEarning());
+
+        String cutoffDayStr = crdCreditCardSaveRequestDto.getCutoffDay();
+
+        LocalDate cutoffDateLocal = calculateCutoffDateLocal(cutoffDayStr);
+        Date cutoffDate = DateUtil.convertToDate(cutoffDateLocal);
+
+        LocalDate dueDateLocal = cutoffDateLocal.plusDays(10L);
+        Date dueDate = DateUtil.convertToDate(dueDateLocal);
+
+        LocalDate expireDateLocal = LocalDate.now().plusYears(3L);
+        Date expireDate = DateUtil.convertToDate(expireDateLocal);
+
         CrdCreditCard crdCreditCard = new CrdCreditCard();
         crdCreditCard.setCusCustomer(cusCustomer);
         crdCreditCard.setCardNo(cardNo);
         crdCreditCard.setCvvNo(cvvNo);
         crdCreditCard.setMinimumPaymentAmount(BigDecimal.ZERO);
         crdCreditCard.setCurrentDebt(BigDecimal.ZERO);
-//        crdCreditCard.setCutoffDate(); //TODO: calculate and set
-//        crdCreditCard.setDueDate();
-//        crdCreditCard.setExpireDate();
-//        crdCreditCard.setTotalLimit();
-//        crdCreditCard.setAvailableCardLimit();
+        crdCreditCard.setTotalLimit(limit);
+        crdCreditCard.setCutoffDate(cutoffDate);
+        crdCreditCard.setDueDate(dueDate);
+        crdCreditCard.setExpireDate(expireDate);
+        crdCreditCard.setAvailableCardLimit(limit);
 
         crdCreditCard = crdCreditCardEntityService.save(crdCreditCard);
 
         CrdCreditCardDto crdCreditCardDto = CrdCreditCardMapper.INSTANCE.convertToCrdCreditCardDto(crdCreditCard);
 
         return crdCreditCardDto;
+    }
+
+    private LocalDate calculateCutoffDateLocal(String cutoffDayStr) {
+        int currentYear = LocalDate.now().getYear();
+        int currentMonth = LocalDate.now().getMonthValue();
+        Month nextMonth = Month.of(currentMonth).plus(1);
+
+        Integer cutoffDay = getCutoffDay(cutoffDayStr);
+
+        LocalDate cutoffDateLocal = LocalDate.of(currentYear, nextMonth, cutoffDay);
+        return cutoffDateLocal;
+    }
+
+    private Integer getCutoffDay(String cutoffDayStr) {
+        if (!StringUtils.hasText(cutoffDayStr)){
+            cutoffDayStr = "1";
+        }
+
+        Integer cutoffDay = Integer.valueOf(cutoffDayStr);
+        return cutoffDay;
+    }
+
+    private BigDecimal calculateLimit(BigDecimal earning) {
+        BigDecimal limit = earning.multiply(BigDecimal.valueOf(3));
+        return limit;
     }
 
     public void cancel(Long id) {

@@ -2,6 +2,7 @@ package com.bahadirmemis.mobileactionbootcamp.cus.service;
 
 import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerSaveRequestDto;
+import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerUpdateRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.entity.CusCustomer;
 import com.bahadirmemis.mobileactionbootcamp.cus.service.entityservice.CusCustomerEntityService;
 import com.bahadirmemis.mobileactionbootcamp.gen.enums.GenErrorMessage;
@@ -142,6 +143,21 @@ class CusCustomerServiceTest {
     }
 
     @Test
-    void update() {
+    void shouldUpdate() {
+
+        Long id = 1L;
+
+        CusCustomerUpdateRequestDto cusCustomerUpdateRequestDto = mock(CusCustomerUpdateRequestDto.class);
+        when(cusCustomerUpdateRequestDto.getId()).thenReturn(id);
+
+        CusCustomer cusCustomer = mock(CusCustomer.class);
+        when(cusCustomer.getId()).thenReturn(id);
+
+        when(cusCustomerEntityService.existsById(id)).thenReturn(Boolean.TRUE);
+        when(cusCustomerEntityService.save(any())).thenReturn(cusCustomer);
+
+        CusCustomerDto result = cusCustomerService.update(cusCustomerUpdateRequestDto);
+
+        assertEquals(id, result.getId());
     }
 }

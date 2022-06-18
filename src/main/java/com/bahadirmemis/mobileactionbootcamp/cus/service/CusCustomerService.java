@@ -79,6 +79,8 @@ public class CusCustomerService {
 
         CusCustomer cusCustomer = CusCustomerMapper.INSTANCE.convertToCusCustomer(cusCustomerUpdateRequestDto);
 
+        String password = passwordEncoder.encode(cusCustomer.getPassword());
+        cusCustomer.setPassword(password);
         cusCustomer = cusCustomerEntityService.save(cusCustomer);
 
         CusCustomerDto cusCustomerDto = CusCustomerMapper.INSTANCE.convertToCusCustomerDto(cusCustomer);

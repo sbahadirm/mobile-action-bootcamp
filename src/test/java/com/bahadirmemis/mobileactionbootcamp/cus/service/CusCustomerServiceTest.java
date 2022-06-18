@@ -4,6 +4,7 @@ import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerSaveRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerUpdateRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.entity.CusCustomer;
+import com.bahadirmemis.mobileactionbootcamp.cus.enums.CusErrorMessage;
 import com.bahadirmemis.mobileactionbootcamp.cus.service.entityservice.CusCustomerEntityService;
 import com.bahadirmemis.mobileactionbootcamp.gen.enums.GenErrorMessage;
 import com.bahadirmemis.mobileactionbootcamp.gen.exceptions.GenBusinessException;
@@ -159,5 +160,30 @@ class CusCustomerServiceTest {
         CusCustomerDto result = cusCustomerService.update(cusCustomerUpdateRequestDto);
 
         assertEquals(id, result.getId());
+    }
+
+    @Test
+    void shouldNotUpdateWhenCustomerDoesNotExists(){
+
+        CusCustomerUpdateRequestDto cusCustomerUpdateRequestDto = mock(CusCustomerUpdateRequestDto.class);
+
+        when(cusCustomerEntityService.existsById(anyLong())).thenReturn(Boolean.FALSE);
+
+        GenBusinessException genBusinessException = assertThrows(GenBusinessException.class,
+                () -> cusCustomerService.update(cusCustomerUpdateRequestDto));
+
+        assertEquals(CusErrorMessage.CUSTOMER_DOES_NOT_EXIST, genBusinessException.getBaseErrorMessage());
+    }
+
+    @Test
+    void shouldNotUpdateWhenCustomerDoesNotExists2(){
+
+        CusCustomerUpdateRequestDto cusCustomerUpdateRequestDto = mock(CusCustomerUpdateRequestDto.class);
+
+        when(cusCustomerEntityService.existsById(anyLong())).thenThrow(ItemNotFoundException.class);
+
+        assertThrows(ItemNotFoundException.class,
+                () -> cusCustomerService.update(cusCustomerUpdateRequestDto));
+
     }
 }

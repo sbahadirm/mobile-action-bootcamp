@@ -59,6 +59,7 @@ public class CrdCreditCardController {
         return ResponseEntity.ok(RestResponse.empty());
     }
 
+    @Operation(tags = "Credit Card Controller")
     @PostMapping("/spend")
     public ResponseEntity spend(@RequestBody CrdCreditCardSpendDto crdCreditCardSpendDto){
 
@@ -67,6 +68,7 @@ public class CrdCreditCardController {
         return ResponseEntity.ok(RestResponse.of(crdCreditCardActivityDto));
     }
 
+    @Operation(tags = "Credit Card Controller")
     @PostMapping("/refund/{activityId}")
     public ResponseEntity refund(@PathVariable Long activityId){
 
@@ -75,6 +77,7 @@ public class CrdCreditCardController {
         return ResponseEntity.ok(RestResponse.of(crdCreditCardActivityDto));
     }
 
+    @Operation(tags = "Credit Card Controller")
     @PostMapping("/payment")
     public ResponseEntity payment(@RequestBody CrdCreditCardPaymentDto crdCreditCardPaymentDto){
 
@@ -83,6 +86,7 @@ public class CrdCreditCardController {
         return ResponseEntity.ok(RestResponse.of(crdCreditCardActivityDto));
     }
 
+    @Operation(tags = "Credit Card Controller")
     @GetMapping("/{id}/statement")
     public ResponseEntity statement(@PathVariable Long id){
 
@@ -91,6 +95,7 @@ public class CrdCreditCardController {
         return ResponseEntity.ok(RestResponse.of(crdCreditCardDetails));
     }
 
+    @Operation(tags = "Credit Card Controller")
     @GetMapping("/{id}/activities")
     public ResponseEntity findAllActivities(
             @PathVariable Long id,

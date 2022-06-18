@@ -6,6 +6,7 @@ import com.bahadirmemis.mobileactionbootcamp.cus.entity.CusCustomer;
 import com.bahadirmemis.mobileactionbootcamp.cus.service.entityservice.CusCustomerEntityService;
 import com.bahadirmemis.mobileactionbootcamp.gen.enums.GenErrorMessage;
 import com.bahadirmemis.mobileactionbootcamp.gen.exceptions.GenBusinessException;
+import com.bahadirmemis.mobileactionbootcamp.gen.exceptions.ItemNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,8 +20,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Bahadır Memiş
@@ -94,7 +94,7 @@ class CusCustomerServiceTest {
     }
 
     @Test
-    void findById() {
+    void shouldFindById() {
 
         CusCustomer cusCustomer = mock(CusCustomer.class);
         when(cusCustomer.getId()).thenReturn(1L);
@@ -104,7 +104,16 @@ class CusCustomerServiceTest {
         CusCustomerDto cusCustomerDto = cusCustomerService.findById(1L);
 
         assertEquals(1L, cusCustomerDto.getId());
+    }
 
+    @Test
+    void shouldNotFindByIdWhenIdDoesNotExists() {
+
+        when(cusCustomerEntityService.findByIdWithControl(anyLong())).thenThrow(ItemNotFoundException.class);
+
+        assertThrows(ItemNotFoundException.class, () -> cusCustomerService.findById(1L));
+
+        verify(cusCustomerEntityService).findByIdWithControl(anyLong());
     }
 
     @Test

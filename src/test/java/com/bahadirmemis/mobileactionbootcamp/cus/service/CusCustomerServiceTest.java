@@ -117,7 +117,28 @@ class CusCustomerServiceTest {
     }
 
     @Test
-    void delete() {
+    void shouldDelete() {
+
+        CusCustomer cusCustomer = mock(CusCustomer.class);
+
+        when(cusCustomerEntityService.findByIdWithControl(anyLong())).thenReturn(cusCustomer);
+
+        doNothing().when(cusCustomerEntityService).delete(any());
+
+        cusCustomerService.delete(1L);
+
+        verify(cusCustomerEntityService).findByIdWithControl(anyLong());
+        verify(cusCustomerEntityService).delete(any());
+    }
+
+    @Test
+    void shouldNotDeleteWhenIdDoesNotExists() {
+
+        when(cusCustomerEntityService.findByIdWithControl(anyLong())).thenThrow(ItemNotFoundException.class);
+
+        assertThrows(ItemNotFoundException.class, () -> cusCustomerService.delete(1L));
+
+        verify(cusCustomerEntityService).findByIdWithControl(anyLong());
     }
 
     @Test

@@ -5,9 +5,11 @@ import com.bahadirmemis.mobileactionbootcamp.crd.service.CrdCreditCardService;
 import com.bahadirmemis.mobileactionbootcamp.gen.response.RestResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,5 +89,19 @@ public class CrdCreditCardController {
         CrdCreditCardDetails crdCreditCardDetails = crdCreditCardService.statement(id);
 
         return ResponseEntity.ok(RestResponse.of(crdCreditCardDetails));
+    }
+
+    @GetMapping("/{id}/activities")
+    public ResponseEntity findAllActivities(
+            @PathVariable Long id,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate,
+            Optional<Integer> pageOptional,
+            Optional<Integer> sizeOptional
+            ){
+
+        List<CrdCreditCardActivityDto> crdCreditCardActivityDtoList =  crdCreditCardService.findAllActivities(id, startDate, endDate, pageOptional, sizeOptional);
+
+        return ResponseEntity.ok(RestResponse.of(crdCreditCardActivityDtoList));
     }
 }

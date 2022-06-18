@@ -16,6 +16,7 @@ import com.bahadirmemis.mobileactionbootcamp.gen.exceptions.GenBusinessException
 import com.bahadirmemis.mobileactionbootcamp.gen.util.DateUtil;
 import com.bahadirmemis.mobileactionbootcamp.gen.util.StringUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -303,4 +304,15 @@ public class CrdCreditCardService {
         }
     }
 
+    public List<CrdCreditCardActivityDto> findAllActivities(Long id, Date startDate, Date endDate,
+                                                            Optional<Integer> pageOptional, Optional<Integer> sizeOptional) {
+
+        List<CrdCreditCardActivity> crdCreditCardActivityList = crdCreditCardActivityEntityService.findAllByCrdCreditCardIdAndTransactionDateBetween(id, startDate, endDate,
+                pageOptional, sizeOptional);
+
+        List<CrdCreditCardActivityDto> result = CrdCreditCardActivityMapper.INSTANCE.convertToCrdCreditCardActivityDtoList(crdCreditCardActivityList);
+
+        return result;
+
+    }
 }

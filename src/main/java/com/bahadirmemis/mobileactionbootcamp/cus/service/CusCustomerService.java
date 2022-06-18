@@ -7,6 +7,7 @@ import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerUpdateRequestDto
 import com.bahadirmemis.mobileactionbootcamp.cus.entity.CusCustomer;
 import com.bahadirmemis.mobileactionbootcamp.cus.enums.CusErrorMessage;
 import com.bahadirmemis.mobileactionbootcamp.cus.service.entityservice.CusCustomerEntityService;
+import com.bahadirmemis.mobileactionbootcamp.gen.enums.GenErrorMessage;
 import com.bahadirmemis.mobileactionbootcamp.gen.exceptions.GenBusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +36,10 @@ public class CusCustomerService {
     }
 
     public CusCustomerDto save(CusCustomerSaveRequestDto cusCustomerSaveRequestDto) {
+
+        if (cusCustomerSaveRequestDto == null){
+            throw new GenBusinessException(GenErrorMessage.PARAMETER_CANNOT_BE_NULL);
+        }
 
         CusCustomer cusCustomer = CusCustomerMapper.INSTANCE.convertToCusCustomer(cusCustomerSaveRequestDto);
 

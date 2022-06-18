@@ -4,11 +4,12 @@ import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.dto.CusCustomerSaveRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.cus.entity.CusCustomer;
 import com.bahadirmemis.mobileactionbootcamp.cus.service.entityservice.CusCustomerEntityService;
+import com.bahadirmemis.mobileactionbootcamp.gen.enums.GenErrorMessage;
+import com.bahadirmemis.mobileactionbootcamp.gen.exceptions.GenBusinessException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -87,7 +88,23 @@ class CusCustomerServiceTest {
     }
 
     @Test
+    void shouldNotSaveWhenParameterIsNull() {
+        GenBusinessException genBusinessException = assertThrows(GenBusinessException.class, () -> cusCustomerService.save(null));
+        assertEquals(GenErrorMessage.PARAMETER_CANNOT_BE_NULL, genBusinessException.getBaseErrorMessage());
+    }
+
+    @Test
     void findById() {
+
+        CusCustomer cusCustomer = mock(CusCustomer.class);
+        when(cusCustomer.getId()).thenReturn(1L);
+
+        when(cusCustomerEntityService.findByIdWithControl(1L)).thenReturn(cusCustomer);
+
+        CusCustomerDto cusCustomerDto = cusCustomerService.findById(1L);
+
+        assertEquals(1L, cusCustomerDto.getId());
+
     }
 
     @Test

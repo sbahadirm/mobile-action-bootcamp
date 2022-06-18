@@ -1,6 +1,5 @@
 package com.bahadirmemis.mobileactionbootcamp.crd.dto;
 
-import com.bahadirmemis.mobileactionbootcamp.crd.entity.CrdCreditCard;
 import com.bahadirmemis.mobileactionbootcamp.crd.enums.EnumCrdCreditCardActivityType;
 import lombok.Data;
 
@@ -14,6 +13,7 @@ import java.util.Date;
 @Data
 public class CrdCreditCardActivityDto {
 
+    private Long id;
     private Long crdCreditCardId;
     private BigDecimal amount;
     private Date transactionDate;

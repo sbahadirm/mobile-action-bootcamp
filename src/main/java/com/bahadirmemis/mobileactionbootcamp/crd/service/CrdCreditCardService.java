@@ -41,7 +41,7 @@ public class CrdCreditCardService {
 
     public List<CrdCreditCardDto> findAll(Optional<Integer> pageOptional, Optional<Integer> sizeOptional) {
 
-        List<CrdCreditCard> crdCreditCardList = crdCreditCardEntityService.findAll(pageOptional, sizeOptional);
+        List<CrdCreditCard> crdCreditCardList = crdCreditCardEntityService.findAllByStatusOrderById(pageOptional, sizeOptional);
 
         List<CrdCreditCardDto> crdCreditCardDtoList = CrdCreditCardMapper.INSTANCE.convertToCrdCreditCardDtoList(crdCreditCardList);
 

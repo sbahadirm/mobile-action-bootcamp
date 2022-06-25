@@ -4,6 +4,7 @@ import com.bahadirmemis.mobileactionbootcamp.gen.entity.BaseAdditionalFields;
 import com.bahadirmemis.mobileactionbootcamp.gen.entity.BaseEntity;
 import com.bahadirmemis.mobileactionbootcamp.gen.enums.GenErrorMessage;
 import com.bahadirmemis.mobileactionbootcamp.gen.exceptions.ItemNotFoundException;
+import com.bahadirmemis.mobileactionbootcamp.jwt.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -73,6 +74,8 @@ public abstract class BaseEntityService<E extends BaseEntity, D extends JpaRepos
 
     private void setAdditionalFields(E entity) {
 
+        Long currentCustomerId = AuthenticationService.currentCustomerId();
+
         BaseAdditionalFields baseAdditionalFields = entity.getBaseAdditionalFields();
 
         if (baseAdditionalFields == null){
@@ -82,11 +85,11 @@ public abstract class BaseEntityService<E extends BaseEntity, D extends JpaRepos
 
         if (entity.getId() == null){
             baseAdditionalFields.setCreateDate(new Date());
-//            baseAdditionalFields.setCreatedBy(); // TODO: update here after jwt
+            baseAdditionalFields.setCreatedBy(currentCustomerId);
         }
 
         baseAdditionalFields.setUpdateDate(new Date());
-//        baseAdditionalFields.setUpdatedBy();// TODO: update here after jwt
+        baseAdditionalFields.setUpdatedBy(currentCustomerId);
     }
 
     public void delete(E e){

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -50,10 +51,16 @@ public class RestTemplateController {
 
         String url = "http://localhost:8081/api/v1/mail-sender";
 
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
 
         HttpEntity<MailSendRequestDto> request = new HttpEntity<>(mailSendRequestDto);
-        ResponseEntity<Boolean> responseEntity = restTemplate.exchange(url, HttpMethod.POST, request, Boolean.class);
+
+        ResponseEntity<Boolean> responseEntity;
+        try {
+            responseEntity = restTemplate.exchange(url, HttpMethod.POST, request, Boolean.class);
+        } catch (Exception e){
+            throw new RuntimeException("Error!");
+        }
 //        ResponseEntity<Boolean> responseEntity = restTemplate.postForEntity(url, mailSendRequestDto, Boolean.class);
 
         Boolean isSuccess = responseEntity.getBody();
@@ -61,4 +68,15 @@ public class RestTemplateController {
         return isSuccess;
     }
 
+    private SimpleClientHttpRequestFactory getClientHttpRequestFactory()
+    {
+        SimpleClientHttpRequestFactory clientHttpRequestFactory
+                = new SimpleClientHttpRequestFactory();
+        //Connect timeout
+        clientHttpRequestFactory.setConnectTimeout(5_000);
+
+        //Read timeout
+        clientHttpRequestFactory.setReadTimeout(5_000);
+        return clientHttpRequestFactory;
+    }
 }

@@ -6,6 +6,7 @@ import com.bahadirmemis.mobileactionbootcamp.cus.service.CusCustomerService;
 import com.bahadirmemis.mobileactionbootcamp.jwt.dto.JwtLoginRequestDto;
 import com.bahadirmemis.mobileactionbootcamp.jwt.enums.JwtConstant;
 import com.bahadirmemis.mobileactionbootcamp.jwt.security.JwtTokenGenerator;
+import com.bahadirmemis.mobileactionbootcamp.jwt.security.JwtUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,5 +44,31 @@ public class AuthenticationService {
         String fullToken = JwtConstant.BEARER.getConstant() + token;
 
         return fullToken;
+    }
+
+    public static Long currentCustomerId(){
+
+        JwtUserDetails jwtUserDetails = getJwtUserDetails();
+        Long currentCustomerId = getJwtUserDetailsId(jwtUserDetails);
+
+        return currentCustomerId;
+    }
+
+    private static Long getJwtUserDetailsId(JwtUserDetails jwtUserDetails) {
+        Long currentCustomerId = null;
+        if (jwtUserDetails != null){
+            currentCustomerId = jwtUserDetails.getId();
+        }
+        return currentCustomerId;
+    }
+
+    private static JwtUserDetails getJwtUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        JwtUserDetails jwtUserDetails = null;
+        if (authentication != null && authentication.getPrincipal() instanceof JwtUserDetails){
+            jwtUserDetails = (JwtUserDetails) authentication.getPrincipal();
+        }
+        return jwtUserDetails;
     }
 }
